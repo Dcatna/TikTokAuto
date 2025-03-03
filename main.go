@@ -21,35 +21,35 @@ func init() {
 const apiURL = "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct"
 
 func generateStory(prompt string) string {
-    apiKey := os.Getenv("HUGGINGFACE_API_KEY")
+	apiKey := os.Getenv("HUGGINGFACE_API_KEY")
 
-    request := map[string]string{"inputs": prompt}
-    jsonData, _ := json.Marshal(request)
+	request := map[string]string{"inputs": prompt}
+	jsonData, _ := json.Marshal(request)
 
-    req, _ := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonData))
-    req.Header.Set("Authorization", "Bearer "+apiKey)
-    req.Header.Set("Content-Type", "application/json")
+	req, _ := http.NewRequest("POST", apiURL, bytes.NewBuffer(jsonData))
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Content-Type", "application/json")
 
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        fmt.Println("Error sending request:", err)
-        return "Error communicating with AI."
-    }
-    defer resp.Body.Close()
+	client := &http.Client{}
+	resp, err := client.Do(req)
 
-    var result []map[string]interface{}
-    json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return "Error communicating with AI."
+	}
+	defer resp.Body.Close()
 
-    if len(result) > 0 {
-        if generatedText, ok := result[0]["generated_text"].(string); ok {
-            // Remove the original prompt if it appears at the start of the generated text
-            cleanText := strings.TrimPrefix(generatedText, prompt)
-            return strings.TrimSpace(cleanText)
-        }
-    }
+	var result []map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&result)
 
-    return "No response from AI."
+	if len(result) > 0 {
+		if generatedText, ok := result[0]["generated_text"].(string); ok {
+			cleanText := strings.TrimPrefix(generatedText, prompt)
+			return strings.TrimSpace(cleanText)
+		}
+	}
+
+	return "No response from AI."
 }
 
 func main() {
