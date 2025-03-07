@@ -90,6 +90,8 @@ func getWavLength(fileName string) (float64, error) {
 	return duration, nil
 }
 
+
+
 func trimMP4(inputVideo string, outputVideo string, duration float64) error {
 	cmd := exec.Command("ffmpeg", "-y", "-i", inputVideo, "-t", strconv.FormatFloat(duration, 'f', 2, 64), "-c", "copy", outputVideo)
 	cmd.Stdout = os.Stdout
@@ -105,6 +107,7 @@ func mergeAudioVideo(videoFile, audioFile, outputFile string) error {
     cmd.Stderr = os.Stderr
     return cmd.Run()
 }
+
 func createSRT(text string, audioDuration float64, outputSRT string) error {
 	words := strings.Fields(text) // Split the story into words
 	wordCount := len(words)
@@ -132,10 +135,9 @@ func createSRT(text string, audioDuration float64, outputSRT string) error {
 		fmt.Fprintf(file, "%d\n%s --> %s\n%s\n\n", i+1, startTimeStr, endTimeStr, word)
 	}
 
-	fmt.Println("✅ Subtitle file created:", outputSRT)
+	fmt.Println("subtitle file created:", outputSRT)
 	return nil
 }
-
 
 func formatTimestamp(seconds float64) string {
 	duration := time.Duration(seconds * float64(time.Second))
@@ -145,6 +147,7 @@ func formatTimestamp(seconds float64) string {
 	milliseconds := int(duration.Milliseconds()) % 1000
 	return fmt.Sprintf("%02d:%02d:%02d,%03d", hours, minutes, secondsPart, milliseconds)
 }
+
 
 func addSubtitles(videoFile, subtitleFile, outputFile string) error {
 	cmd := exec.Command("ffmpeg", "-y", "-i", videoFile, "-vf", fmt.Sprintf("subtitles=%s", subtitleFile), outputFile)
@@ -156,7 +159,8 @@ func addSubtitles(videoFile, subtitleFile, outputFile string) error {
 
 
 func main() {
-	story := generateStory("Write a scary story about a haunted house with 500 words")
+	
+	story := generateStory("Write funny Am I The Asshole story in 500 words")
 	fmt.Println(story)
 	generateVoiceOver(story, "voiceover.wav")
 	duration, err := getWavLength("voiceover.wav")

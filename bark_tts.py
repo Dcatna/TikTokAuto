@@ -10,11 +10,11 @@ sys.stdout.reconfigure(encoding='utf-8')
 os.environ["PYTHONIOENCODING"] = "utf-8"
 if torch.cuda.is_available():
     torch.set_default_tensor_type("torch.cuda.FloatTensor")
-    print("✅ using cuda")
+    print("using cuda")
 else:
-    print("❌ using cpu")
+    print("using cpu")
 
-SPEAKER = "v2/en_speaker_6"
+SPEAKER = "v2/en_speaker_1"
 
 def split_text(text, max_length=150):
     """Splits text into chunks at sentence boundaries (periods, exclamation marks, etc.)."""
